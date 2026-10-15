@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ตกปลาเจ้าสมุทร</title>
+<style>
+:root{--bg:#dbe7f5;--fg:#17304f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#050d1a;--fg:#cfe3ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#050d1a;--fg:#cfe3ff;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 "Sarabun","Noto Sans Thai",Tahoma,sans-serif;display:flex;justify-content:center;padding:8px}
+.w{width:100%;max-width:900px}
+#app{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:3px solid #0b2a55;background:#123;font-size:clamp(10px,1.9vw,15px);color:#eaf4ff}
+canvas{width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+.ic{width:1.5em;height:1.5em;flex:none;vertical-align:middle}
+.glass,.pill,.rb,.nb,.cd,.pn,.hd .bk,.tabs{background:linear-gradient(#103a72,#081d42);border:2px solid #1d6fd6;box-shadow:inset 0 0 .8em rgba(40,140,255,.3)}
+#hud{position:absolute;top:.6em;left:.6em;right:.6em;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.prof{width:34%;min-width:11em;padding:.4em .7em;border-radius:.8em}
+.prof b{font-size:1.1em}.prof span{margin-left:.6em;opacity:.85}
+.xp{height:.7em;background:#04122a;border-radius:1em;overflow:hidden;margin:.3em 0;border:1px solid #1d6fd6}
+.xp i{display:block;height:100%;background:linear-gradient(#58c6ff,#1b8cff)}
+.cur{display:flex;gap:.5em}.pill{display:inline-flex;align-items:center;gap:.4em;padding:.15em .9em .15em .4em;border-radius:1em;font-weight:700}
+#rail{position:absolute;left:.6em;top:6em;display:flex;flex-direction:column;gap:.5em}
+.rb{display:flex;flex-direction:column;align-items:center;width:4.6em;padding:.3em 0;border-radius:.7em;color:#eaf4ff;font:inherit;font-size:.85em;cursor:pointer}
+.rb .ic{width:2em;height:2em}
+button{font:inherit}
+.big{position:absolute;right:4%;bottom:7%;font-size:2.4em;font-weight:800;padding:.2em 1em;border-radius:.6em;border:.1em solid #fff;border-bottom-width:.18em;background:linear-gradient(#ffd54a,#f59a0e);color:#0b3a8a;cursor:pointer;text-shadow:0 1px 0 #fff8}
+.big[hidden],#scr[hidden]{display:none}
+#scr{position:absolute;inset:0;background:linear-gradient(rgba(4,16,38,.95),rgba(6,26,58,.97));padding:.8em 1.2em;overflow:auto}
+.hd{display:flex;align-items:center;gap:.8em;margin-bottom:.7em}
+.hd h2{flex:1;margin:0;font-size:1.5em}
+.bk{width:2.6em;height:2.6em;border-radius:.7em;color:#fff;font-size:1.2em;cursor:pointer}
+.tabs{display:flex;border-radius:.8em;padding:.2em;margin-bottom:.7em;gap:.2em}
+.tab{flex:1;background:none;border:0;color:#cfe3ff;padding:.4em;border-radius:.6em;cursor:pointer}
+.tab.on{background:linear-gradient(#34a4ff,#1470e0);color:#fff;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5em,1fr));gap:.6em}
+.cd{position:relative;display:flex;flex-direction:column;align-items:center;gap:.15em;padding:.6em;border-radius:.8em;text-align:center}
+.cd.qr,.ur{flex-direction:row;justify-content:space-between;gap:.8em;margin-bottom:.5em;text-align:left}
+.cd.qr>div{flex:1}.me{border-color:#ffd54a}
+.fs{width:5em;height:3em}.cd .ic{width:3em;height:3em}
+.cd small,.sm{opacity:.8;font-size:.85em}.sm{margin:.2em 0 .6em}
+.st{color:#ffc933;letter-spacing:.1em;font-size:.8em}
+.x{position:absolute;right:.5em;bottom:.4em;font-weight:700;font-size:.85em}
+.pn{padding:.8em 1em;border-radius:.9em}.pn h3{margin:0 0 .3em}
+.ur{display:flex;align-items:center;padding:.6em 0;border-top:1px solid #1d4a8a}
+.ur b{flex:1}.ur em{color:#5be37a;font-style:normal}.ur u{text-decoration:none;color:#5be37a;font-weight:700}
+.gd{display:inline-flex;align-items:center;gap:.3em;justify-content:center;font-weight:800;color:#3a2400;background:linear-gradient(#ffd54a,#f59a0e);border:2px solid #b36b00;border-bottom-width:4px;border-radius:.6em;padding:.25em .9em;cursor:pointer;white-space:nowrap}
+.gd:active{transform:translateY(2px)}.gd[disabled]{filter:grayscale(1);opacity:.5;cursor:default}
+.bar{display:flex;justify-content:space-between;align-items:center;margin-top:.8em;font-weight:700}
+.tgl{width:3.4em;height:1.8em;border-radius:1em;border:2px solid #1d6fd6;background:#04122a;position:relative;cursor:pointer}
+.tgl i{position:absolute;top:.15em;left:.2em;width:1.2em;height:1.2em;border-radius:50%;background:#9db6d8;transition:left .15s}
+.tgl.on{background:#1b8cff}.tgl.on i{left:1.8em;background:#fff}
+.map{position:relative;height:75%;min-height:14em;border-radius:.9em;border:2px solid #1d6fd6;background:radial-gradient(#2a8fd6,#0b3f7a);overflow:hidden}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.pin{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;background:rgba(4,16,38,.85);color:#fff;border:2px solid var(--c);border-radius:.7em;padding:.3em .8em;font-weight:700;cursor:pointer}
+.pin i{width:1.1em;height:1.1em;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--c);margin-bottom:.2em}
+.pin small{font-weight:400;opacity:.85}
+#nav{display:grid;grid-template-columns:repeat(7,1fr);gap:.4em;margin-top:.5em;font-size:clamp(9px,1.7vw,14px)}
+.nb{display:flex;flex-direction:column;align-items:center;gap:.1em;padding:.4em .1em;border-radius:.8em;color:#eaf4ff;cursor:pointer;line-height:1.2}
+.nb .ic{width:2em;height:2em}
+.nb.on{background:linear-gradient(#34a4ff,#1470e0);border-color:#8fd0ff}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.tip{font-size:.85rem;margin:8px 2px;opacity:.85}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e8a317" stroke="#9a6200" stroke-width="2"/><circle cx="12" cy="12" r="6.5" fill="#ffd45a"/><path d="M12 8v8M9.5 10.5h4a1.5 1.5 0 010 3h-3.5" stroke="#9a6200" stroke-width="1.6" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-gem" viewBox="0 0 24 24"><polygon points="12,2 21,9 12,22 3,9" fill="#4fc3ff" stroke="#0b5aa8" stroke-width="1.5"/><path d="M3 9h18M8 9l4-7 4 7-4 13z" fill="none" stroke="#d6f3ff" stroke-width="1"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7z" fill="#ff6b6b" stroke="#7a1f1f" stroke-width="1.5"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></symbol>
+<symbol id="i-rod" viewBox="0 0 24 24"><path d="M3 21L19 4" stroke="#d8a66a" stroke-width="2.4" stroke-linecap="round"/><path d="M19 4c2 3 1 8-2 10" stroke="#e8f4f0" stroke-width="1.2" fill="none"/><circle cx="17" cy="15" r="2" fill="#ff4d4d"/></symbol>
+<symbol id="i-shop" viewBox="0 0 24 24"><path d="M4 9l2-5h12l2 5v2a3 3 0 01-6 0 3 3 0 01-6 0 3 3 0 01-6 0z" fill="#ff7a59" stroke="#fff" stroke-width="1.2"/><rect x="5" y="12" width="14" height="8" fill="#ffe3b0" stroke="#fff" stroke-width="1.2"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 8h12l2 12H4z" fill="#9fb8dd" stroke="#eaf4ff" stroke-width="1.5"/><path d="M9 8V6a3 3 0 016 0v2" fill="none" stroke="#eaf4ff" stroke-width="1.5"/><rect x="10" y="12" width="4" height="3" rx=".8" fill="#ffd45a"/></symbol>
+<symbol id="i-fish" viewBox="0 0 24 24"><ellipse cx="11" cy="12" rx="8" ry="5" fill="#cfe3ff"/><path d="M17 12l6-5v10z" fill="#cfe3ff"/><circle cx="7" cy="11" r="1.2" fill="#0b2a55"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 3l8 9h-5v9H9v-9H4z" fill="#eaf4ff"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2" fill="#eaf4ff"/><rect x="9" y="2" width="6" height="4" rx="1" fill="#9fb8dd"/><path d="M8 13l3 3 5-6" stroke="#1470e0" stroke-width="2" fill="none"/></symbol>
+<symbol id="i-cup" viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 01-10 0z" fill="#ffd45a"/><path d="M7 5H3c0 4 2 5 4 5M17 5h4c0 4-2 5-4 5" stroke="#ffd45a" stroke-width="1.6" fill="none"/><rect x="10.5" y="14" width="3" height="4" fill="#e8a317"/><rect x="7" y="18" width="10" height="3" rx="1" fill="#ffd45a"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="#eaf4ff" stroke-width="4" stroke-dasharray="3.2 2.6"/><circle cx="12" cy="12" r="5" fill="#eaf4ff"/><circle cx="12" cy="12" r="2.2" fill="#0b2a55"/></symbol>
+<symbol id="i-bait" viewBox="0 0 24 24"><path d="M5 14c0-5 5-9 11-8 2 0 3 2 2 4-1 5-5 9-10 8-2 0-3-2-3-4z" fill="#ff9ec7" stroke="#8a2a55" stroke-width="1.5"/><circle cx="14" cy="9" r="1.4" fill="#8a2a55"/></symbol>
+</defs></svg>
+<div class="w"><div id="app"><canvas id="c" width="640" height="400"></canvas>
+<div id="hud"><div class="prof glass"><b>นักตกปลา</b><span id="pl"></span><div class="xp"><i id="xb"></i></div></div><div class="cur"><span class="pill" id="m"></span><span class="pill" id="g"></span></div></div>
+<div id="rail"><button class="rb" onclick="nav('shop')"><svg class="ic"><use href="#i-shop"/></svg>ร้านค้า</button><button class="rb" onclick="nav('map')"><svg class="ic"><use href="#i-pin"/></svg>แผนที่</button></div>
+<button id="start" class="big" onclick="startGame()">เริ่มเกม</button>
+<section id="scr" hidden></section></div>
+<nav id="nav"></nav>
+<div class="tip">กดค้างที่จอ (หรือ Space ค้าง) เพื่อชาร์จ แล้วปล่อยเพื่อเหวี่ยงเบ็ด · เมื่อปลากินเบ็ดให้กดทันที แล้วกดรัว ๆ ดึงปลา</div></div>
+<script>
+const C=document.getElementById('c'),X=C.getContext('2d'),W=640,H=400,WY=215,$=id=>document.getElementById(id);
+const RN=['ธรรมดา','พบน้อย','หายาก','มหากาพย์','ตำนาน','ลับ'],RC=['#9fb0b8','#6fd36f','#4aa8ff','#b66bff','#ffb52e','#ff4d6d'],RW=[55,28,12,4,1,.25];
+const MU=[['',1,80],['เงางาม',2,12],['ทองคำ',3,6],['สายรุ้ง',5,1.5],['จักรวาล',10,.5]];
+const AR=[{n:'บึงใสสงบ',cost:0,s:['#7ccbff','#e9f7ff'],w:['#2e9bc9','#17607f']},{n:'แนวปะการัง',cost:500,s:['#ff9566','#ffe3b0'],w:['#2a86b0','#124a6a']},{n:'ทะเลลึก',cost:4000,s:['#070c26','#26356b'],w:['#14407a','#050f2a']}];
+const F=[[0,'ปลาซิว',0,5,.1,'#b8c4cc'],[0,'ปลาหมอ',0,8,.3,'#a07a55'],[0,'ปลานิล',1,16,.9,'#7e8f9c'],[0,'ปลาช่อน',2,42,1.8,'#4e6b4a'],[0,'ตะเพียนทอง',3,125,2.5,'#e8b43c'],
+[1,'ปลาการ์ตูน',0,26,.2,'#ff8a2a'],[1,'ปลาสิงโต',1,52,.8,'#c4483a'],[1,'ปลากระเบน',2,145,6,'#5a7da6'],[1,'หมึกกล้วย',3,330,3,'#d58fb0'],[1,'ปลาแสงรุ้ง',4,950,4,'#5ee6c8'],
+[2,'ปลาโคมไฟ',1,150,1.2,'#6a4fa8'],[2,'ฉลามหัวค้อน',2,520,60,'#6f7f8a'],[2,'วาฬเพชร',3,1550,300,'#7fd8ff'],[2,'หมึกยักษ์',4,5200,120,'#b0364a'],[2,'ปลาเงาจันทร์',5,21000,9,'#f4f1ff']];
+const D={money:0,rod:0,luck:0,area:0,open:[1,0,0],bag:[],dex:{},n:0,gem:0,xp:0,lv:1,score:0,bait:0,q:{c:0,r:0,s:0,rf:0},qc:[0,0,0,0],fx:{shake:1,part:1}};let G=JSON.parse(JSON.stringify(D));
+try{const s=localStorage.getItem('fishgame1');if(s)G=Object.assign(G,JSON.parse(s))}catch(e){}
+const save=()=>{try{localStorage.setItem('fishgame1',JSON.stringify(G))}catch(e){}};
+const rodCost=()=>Math.round(80*Math.pow(1.9,G.rod)),luckCost=()=>Math.round(120*Math.pow(1.85,G.luck));
+const power=()=>5.5+G.rod*2.2,fmt=n=>n.toLocaleString('th-TH');
+let st='idle',t=0,ch=0,dir=1,holding=false,cast=0,wait=0,bt=0,lb=0,p=0,fish=null,decay=0,surge=0,rt=0,res=null,msg='กดค้างเพื่อชาร์จ แล้วปล่อยเพื่อเหวี่ยงเบ็ด',mt=5,fx=[],tx=[],shake=0,bob=0;
+function say(s,d=2.2){msg=s;mt=d}
+function pickFish(){const pool=F.filter(f=>f[0]==G.area),l=G.luck*.25+lb;
+const w=pool.map(f=>RW[f[2]]*(1+l*f[2]*.5)),sum=w.reduce((a,b)=>a+b,0);let r=Math.random()*sum,i=0;while(r>w[i]){r-=w[i];i++}return pool[i]}
+function pickMut(){let r=Math.random()*100;for(let i=0;i<MU.length;i++){r-=MU[i][2];if(r<=0)return i}return 0}
+function down(){if(!started||scr)return;if(st=='idle'){holding=true;st='charge';ch=0;dir=1}else if(st=='wait'){st='idle';say('ดึงเร็วเกินไป ปลาตกใจหนีไปแล้ว')}
+else if(st=='bite'){startReel()}else if(st=='reel'){p+=power();for(let i=0;i<3;i++)fx.push({x:cast,y:WY+10,vx:rnd(-40,40),vy:rnd(-110,-40),l:.4})}else if(st=='result'&&rt<1.1){st='idle'}}
+function up(){if(st=='charge'&&holding){holding=false;doCast()}holding=false}
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function doCast(){cast=190+ch*320;const perfect=ch>.72&&ch<.94;lb=(perfect?2:0)+(G.bait>0?(G.bait--,1.5):0);wait=(2.6-ch*1.3)*rnd(.7,1.3)*(perfect?.6:1);st='wait';t0=0;say(perfect?'เหวี่ยงสมบูรณ์แบบ! โชคเพิ่ม':'รอปลากินเบ็ด...',1.8)}
+let t0=0;
+function startReel(){fish=pickFish();const mu=pickMut();fish.mu=mu;p=35;decay=9+fish[2]*7;surge=0;st='reel';t0=0;rt=0;say(fish[2]>=3?'ปลาตัวใหญ่! กดรัว ๆ':'กดรัว ๆ ดึงปลาขึ้นมา!',1.6)}
+function endCatch(){const f=fish,kg=+(f[4]*rnd(.6,1.5)).toFixed(2),v=Math.max(1,Math.round(f[3]*MU[f.mu][1]*(.8+kg/f[4]*.2)));
+const nw=!G.dex[F.indexOf(f)];G.bag.push({i:F.indexOf(f),m:f.mu,kg,v});const d=G.dex[F.indexOf(f)]||(G.dex[F.indexOf(f)]={n:0,b:0});d.n++;d.b=Math.max(d.b,f.mu);G.n++;G.score+=v;G.q.c++;if(f[2]>=2)G.q.r++;if(G.area==1)G.q.rf++;gainXp((f[2]+1)*10);res={f,kg,v,nw,m:f.mu};st='result';rt=2.4;shake=f[2]>=3?10:4;save();render()}
+function lose(s){st='idle';say(s);shake=3}
+function update(dt){t+=dt;bob+=dt;t0+=dt;mt-=dt;shake=Math.max(0,shake-dt*20);
+if(st=='charge'){ch+=dir*dt*1.1;if(ch>=1){ch=1;dir=-1}if(ch<=0){ch=0;dir=1}}
+else if(st=='wait'){wait-=dt;if(wait<=0){st='bite';t0=0;say('ปลากินเบ็ด! กดเลย!',1.2)}}
+else if(st=='bite'){if(t0>1.2)lose('ปลาหลุดไปแล้ว ต้องกดให้ไวกว่านี้')}
+else if(st=='reel'){surge-=dt;if(surge<=0&&Math.random()<dt*.5&&fish[2]>0){surge=.7;say('ปลาดิ้นแรง!',.7)}
+p-=decay*(surge>0?1.8:1)*dt;if(p>=100)endCatch();else if(p<=0)lose('ปลาหนีไปได้ อัปเกรดคันเบ็ดจะดึงแรงขึ้น');else if(t0>11)lose('หมดเวลา ปลาสลัดเบ็ดหลุด')}
+else if(st=='result'){rt-=dt;if(rt<=0)st='idle'}
+fx.forEach(f=>{f.l-=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=260*dt});fx=fx.filter(f=>f.l>0)}
+function fishIcon(x,y,s,c,flip){X.save();X.translate(x,y);X.scale(flip?-s:s,s);X.fillStyle=c;X.beginPath();X.ellipse(0,0,16,8,0,0,7);X.fill();X.beginPath();X.moveTo(-12,0);X.lineTo(-24,-8);X.lineTo(-24,8);X.fill();X.fillStyle='#fff';X.beginPath();X.arc(8,-2,2.5,0,7);X.fill();X.fillStyle='#111';X.beginPath();X.arc(8.6,-2,1.2,0,7);X.fill();X.restore()}
+function draw(){const a=AR[G.area];let g=X.createLinearGradient(0,0,0,WY);g.addColorStop(0,a.s[0]);g.addColorStop(1,a.s[1]);X.fillStyle=g;X.fillRect(0,0,W,WY);
+if(G.area==2){X.fillStyle='#fff';for(let i=0;i<30;i++)X.fillRect((i*97)%W,(i*53)%180,2,2);X.fillStyle='#f4f1ff';X.beginPath();X.arc(540,50,22,0,7);X.fill()}
+else{X.fillStyle=G.area?'#ffd27a':'#fff7c2';X.beginPath();X.arc(520,60,26,0,7);X.fill()}
+X.fillStyle=G.area==2?'#0a1430':G.area?'#7b5a63':'#5a8f6b';X.beginPath();X.moveTo(300,WY);X.lineTo(400,150);X.lineTo(470,WY);X.fill();X.beginPath();X.moveTo(420,WY);X.lineTo(560,130);X.lineTo(640,WY);X.fill();
+g=X.createLinearGradient(0,WY,0,H);g.addColorStop(0,a.w[0]);g.addColorStop(1,a.w[1]);X.fillStyle=g;X.fillRect(0,WY,W,H-WY);
+X.strokeStyle='rgba(255,255,255,.35)';X.lineWidth=2;for(let r=0;r<5;r++){X.beginPath();for(let x=0;x<=W;x+=10){const y=WY+8+r*34+Math.sin(x*.03+t*1.5+r)*3;x?X.lineTo(x,y):X.moveTo(x,y)}X.stroke()}
+if(G.area==1){X.fillStyle='#e0507a';for(let i=0;i<8;i++)X.fillRect(30+i*80,H-14-(i%3)*8,22,14+(i%3)*8)}
+if(G.area==2){X.fillStyle='rgba(120,200,255,.5)';for(let i=0;i<5;i++){X.beginPath();X.arc(60+i*130+Math.sin(t+i)*10,260+((t*20+i*60)%120),4,0,7);X.fill()}}
+const sh=shake&&G.fx.shake?rnd(-shake,shake)/3:0;X.save();X.translate(sh,sh);
+X.fillStyle='#6b4a2f';X.fillRect(0,WY-8,150,10);X.fillRect(10,WY,8,60);X.fillRect(120,WY,8,60);
+X.fillStyle='#ffb347';X.beginPath();X.arc(92,WY-34,10,0,7);X.fill();X.fillStyle='#2d6a8a';X.fillRect(84,WY-24,16,16);
+const tipx=150,tipy=WY-60;X.strokeStyle='#3a2410';X.lineWidth=3;X.beginPath();X.moveTo(98,WY-20);X.lineTo(tipx,tipy);X.stroke();
+if(st!='idle'&&st!='charge'&&st!='result'){const by=WY+6+(st=='bite'?Math.sin(t*40)*4+6:Math.sin(bob*3)*2);X.strokeStyle='rgba(255,255,255,.8)';X.lineWidth=1;X.beginPath();X.moveTo(tipx,tipy);X.quadraticCurveTo((tipx+cast)/2,tipy-20,cast,by);X.stroke();
+X.fillStyle='#ff4d4d';X.beginPath();X.arc(cast,by,6,0,7);X.fill();X.fillStyle='#fff';X.fillRect(cast-6,by-1,12,2);
+if(st=='bite'){X.fillStyle='#ffe14d';X.font='bold 34px sans-serif';X.textAlign='center';X.fillText('!',cast,by-26)}
+if(st=='reel')fishIcon(cast+Math.sin(t*14)*8,by+30+Math.sin(t*9)*6,1.2+fish[2]*.15,'#1a2a35',Math.sin(t*3)>0)}
+else{X.strokeStyle='rgba(255,255,255,.8)';X.lineWidth=1;X.beginPath();X.moveTo(tipx,tipy);X.lineTo(tipx+6,WY-20);X.stroke()}
+X.restore();
+if(G.fx.part)fx.forEach(f=>{X.globalAlpha=f.l*2.5;X.fillStyle='#fff';X.fillRect(f.x,f.y,4,4);X.globalAlpha=1});
+X.textAlign='center';
+if(st=='charge'){X.fillStyle='rgba(0,0,0,.55)';X.fillRect(170,360,300,18);X.fillStyle='rgba(255,214,77,.45)';X.fillRect(170+300*.72,360,300*.22,18);X.fillStyle='#4fd1c5';X.fillRect(170,360,300*ch,18);X.strokeStyle='#fff';X.lineWidth=2;X.strokeRect(170,360,300,18);X.fillStyle='#fff';X.font='12px sans-serif';X.fillText('ปล่อยในช่วงสีทองเพื่อโชคเพิ่ม',320,352)}
+if(st=='reel'){X.fillStyle='rgba(0,0,0,.6)';X.fillRect(170,360,300,22);X.fillStyle=p<30?'#ff6b6b':'#6fe36f';X.fillRect(170,360,300*clamp(p/100),22);X.strokeStyle='#fff';X.lineWidth=2;X.strokeRect(170,360,300,22);X.fillStyle='#fff';X.font='bold 14px sans-serif';X.fillText(surge>0?'ปลาดิ้นแรง! กดเร็วขึ้น':'กดรัว ๆ!',320,352)}
+if(mt>0&&st!='result'){X.font='bold 15px sans-serif';X.fillStyle='rgba(0,0,0,.55)';const w=X.measureText(msg).width+24;X.fillRect(320-w/2,16,w,28);X.fillStyle='#fff';X.fillText(msg,320,36)}
+if(st=='result'&&res){const r=res,f=r.f;X.fillStyle='rgba(6,20,30,.82)';X.fillRect(170,70,300,220);X.strokeStyle=RC[f[2]];X.lineWidth=4;X.strokeRect(170,70,300,220);
+fishIcon(320,140,2.6,f[5]);X.fillStyle='#fff';X.font='bold 20px sans-serif';X.fillText((r.m?MU[r.m][0]+' ':'')+f[1],320,200);
+X.fillStyle=RC[f[2]];X.font='bold 15px sans-serif';X.fillText(RN[f[2]]+(r.nw?'  · ใหม่ในสมุดสะสม!':''),320,224);X.fillStyle='#fff';X.font='14px sans-serif';X.fillText(`น้ำหนัก ${r.kg} กก. · มูลค่า ${fmt(r.v)} บาท`,320,252);X.fillStyle='#aab';X.font='12px sans-serif';X.fillText('กดเพื่อตกต่อ',320,276)}}
+const clamp=(v)=>Math.max(0,Math.min(1,v));
+const ic=n=>`<svg class="ic"><use href="#i-${n}"/></svg>`;
+const fi=c=>`<svg class="fs" viewBox="-28 -12 56 24"><ellipse rx="16" ry="8" fill="${c}" stroke="#06182e" stroke-width="1.5"/><path d="M-12 0L-26-9V9z" fill="${c}" stroke="#06182e" stroke-width="1.5"/><path d="M-3-8Q3-14 8-8z" fill="${c}" stroke="#06182e" stroke-width="1"/><circle cx="8" cy="-2" r="2.5" fill="#fff"/></svg>`;
+let scr=null,sub=0,started=false;
+const NAV=[['home','rod','ตกปลา'],['fish','fish','ปลาที่ได้รับ'],['bag','bag','กระเป๋า'],['upg','up','อัปเกรด'],['quest','clip','เควส'],['rank','cup','อันดับ'],['set','gear','ตั้งค่า']];
+const SH=[['ถุงเหรียญเล็ก','coin','g',5,()=>G.money+=500,'+500 เหรียญ'],['ถุงเหรียญใหญ่','coin','g',25,()=>G.money+=3000,'+3,000 เหรียญ'],['เหยื่อเรืองแสง x10','bait','c',800,()=>G.bait+=10,'โชคเพิ่ม 10 ครั้ง'],['เหยื่อเรืองแสง x40','bait','g',20,()=>G.bait+=40,'โชคเพิ่ม 40 ครั้ง']];
+const QS=[['จับปลา 5 ตัว','c',5,150,10],['จับปลาหายากขึ้นไป 2 ตัว','r',2,400,15],['ขายปลารวม 1,000 บาท','s',1000,500,20],['จับปลาที่แนวปะการัง 3 ตัว','rf',3,800,25]];
+const RV=[['นักตกปลา No.1',1250000],['FishMaster',980450],['สายลุยทะเล',765320],['BlueOcean',540870],['ลุงเรือหาง',320100]];
+const cur=()=>`<span class="cur"><span class="pill">${ic('coin')}${fmt(G.money)}</span><span class="pill">${ic('gem')}${fmt(G.gem)}</span></span>`;
+const hd=t=>`<header class="hd"><button class="bk" onclick="nav('home')" aria-label="กลับ">←</button><h2>${t}</h2>${cur()}</header>`;
+const tabs=l=>`<div class="tabs">${l.map((t,i)=>`<button class="tab${i==sub?' on':''}" onclick="sub=${i};render()">${t}</button>`).join('')}</div>`;
+const SC={
+fish(){const L=F.map((f,i)=>[f,i]).filter(([f])=>!sub||f[0]==sub-1);return hd('ปลาที่ได้รับ')+tabs(['ทั้งหมด',...AR.map(a=>a.n)])+`<div class="grid">`+L.map(([f,i])=>{const d=G.dex[i];return `<div class="cd" style="border-color:${d?RC[f[2]]:'#1d4a8a'}">${fi(d?f[5]:'#1b3a66')}<b>${d?f[1]:'???'}</b><small>${d?RN[f[2]]+' · จับได้ '+d.n:AR[f[0]].n}</small><span class="st">${'★'.repeat(f[2]+1)}</span></div>`}).join('')+`</div>`},
+bag(){const m={};G.bag.forEach(b=>{const k=b.i+'_'+b.m;(m[k]=m[k]||{b,n:0,v:0}).n++;m[k].v+=b.v});const tot=G.bag.reduce((s,b)=>s+b.v,0);
+const it=sub==2?[]:Object.values(m).map(({b,n,v})=>`<div class="cd" style="border-color:${RC[F[b.i][2]]}">${fi(F[b.i][5])}<b>${b.m?MU[b.m][0]+' ':''}${F[b.i][1]}</b><small>${fmt(v)} บาท</small><span class="x">x${n}</span></div>`);
+if(sub!=1&&G.bait)it.push(`<div class="cd">${ic('bait')}<b>เหยื่อเรืองแสง</b><small>โชคเพิ่ม</small><span class="x">x${G.bait}</span></div>`);
+return hd('กระเป๋า')+tabs(['ทั้งหมด','ปลา','ของใช้'])+`<div class="grid">${it.join('')||'<p class="sm">ยังไม่มีของ ไปตกปลากันเลย!</p>'}</div><div class="bar"><span>รวม ${fmt(tot)} บาท</span><button class="gd" onclick="sell()" ${G.bag.length?'':'disabled'}>ขายปลาทั้งหมด</button></div>`},
+upg(){const mx=8,row=(n,i,c1,c2,k,c)=>`<div class="ur">${ic(i)}<b>${n}</b><span>${c1} <em>➜</em> <u>${G[k]>=mx?'สูงสุด':c2}</u></span><button class="gd" onclick="buy('${k}')" ${G[k]>=mx||G.money<c?'disabled':''}>${G[k]>=mx?'สูงสุด':ic('coin')+fmt(c)}</button></div>`;
+return hd('อัปเกรด / พัฒนาตัวละคร')+`<div class="pn"><h3>นักตกปลา Lv.${G.lv}</h3><div class="xp"><i style="width:${100*G.xp/(G.lv*50)}%"></i></div><small>${G.xp} / ${G.lv*50} XP</small>`+row('พลังดึงปลา (คันเบ็ด)','rod',(5.5+G.rod*2.2).toFixed(1),(5.5+(G.rod+1)*2.2).toFixed(1),'rod',rodCost())+row('โชคปลาหายาก (เหยื่อ)','bait','+'+G.luck*25+'%','+'+(G.luck+1)*25+'%','luck',luckCost())+`</div>`},
+quest(){return hd('เควส / ภารกิจ')+QS.map((q,i)=>{const v=Math.min(G.q[q[1]],q[2]),ok=v>=q[2],dn=G.qc[i];return `<div class="cd qr"><div><b>${q[0]}</b><div class="xp"><i style="width:${100*v/q[2]}%"></i></div><small>${fmt(v)} / ${fmt(q[2])}</small></div><span>${ic('coin')}${fmt(q[3])} ${ic('gem')}${q[4]}</span><button class="gd" onclick="claim(${i})" ${ok&&!dn?'':'disabled'}>${dn?'รับแล้ว':ok?'รับรางวัล':'ยังไม่ครบ'}</button></div>`}).join('')},
+rank(){const all=[...RV.map(r=>[r[0],r[1],0]),['คุณ',G.score,1]].sort((a,b)=>b[1]-a[1]);return hd('อันดับ / กระดานคะแนน')+`<p class="sm">คะแนน = มูลค่าปลาที่จับได้ทั้งหมด · คู่แข่งเป็นผู้เล่นจำลองในเครื่อง</p>`+all.map((r,i)=>`<div class="cd qr${r[2]?' me':''}"><b>${i<3?['🥇','🥈','🥉'][i]:i+1}</b><b>${r[0]}</b><span>${fmt(r[1])}</span></div>`).join('')},
+set(){return hd('ตั้งค่า')+[['shake','จอสั่นเมื่อมีเหตุการณ์'],['part','เอฟเฟกต์ประกายน้ำ']].map(([k,t])=>`<div class="cd qr"><b>${t}</b><button class="tgl${G.fx[k]?' on':''}" onclick="tg('${k}')" aria-pressed="${!!G.fx[k]}" aria-label="${t}"><i></i></button></div>`).join('')+`<p class="sm">ภาษา: ไทย · เกมนี้ยังไม่มีเสียง</p><button class="gd" onclick="if(confirm('ล้างความคืบหน้าทั้งหมด?')){G=JSON.parse(JSON.stringify(D));started=false;save();nav('home')}">เริ่มใหม่ทั้งหมด</button>`},
+shop(){return hd('ร้านค้า')+`<p class="sm">ซื้อด้วยเหรียญหรือเพชรที่ได้จากเควสและเลเวลอัป (ไม่มีการเติมเงินจริง)</p><div class="grid">`+SH.map((s,i)=>{const c=s[2]=='g'?G.gem:G.money;return `<div class="cd">${ic(s[1])}<b>${s[0]}</b><small>${s[5]}</small><button class="gd" onclick="shopBuy(${i})" ${c<s[3]?'disabled':''}>${ic(s[2]=='g'?'gem':'coin')}${fmt(s[3])}</button></div>`}).join('')+`</div>`},
+map(){const P=[[16,34,'#3fb950'],[44,62,'#ffa51f'],[70,22,'#3b82f6']];return hd('แผนที่ / สถานที่ตกปลา')+`<div class="map"><svg viewBox="0 0 100 60" preserveAspectRatio="none"><path d="M3 30Q8 8 30 12T50 32 38 54 12 52z" fill="#3f8f4f"/><path d="M52 40Q62 28 74 36T92 48 70 58z" fill="#4a9a5a"/><path d="M62 8Q76 2 94 12T86 30 64 26z" fill="#8a7a5a"/></svg>`+AR.map((a,i)=>`<button class="pin" style="left:${P[i][0]}%;top:${P[i][1]}%;--c:${P[i][2]}" onclick="goMap(${i})"><i></i>${a.n}<small>${i==G.area?'ที่นี่':G.open[i]?'ไปที่นี่':'ปลดล็อก '+fmt(a.cost)}</small></button>`).join('')+`</div>`}};
+function nav(n){scr=n=='home'?null:n;sub=0;render()}
+function render(){$('m').innerHTML=ic('coin')+fmt(G.money);$('g').innerHTML=ic('gem')+fmt(G.gem);$('pl').textContent='Lv. '+G.lv;$('xb').style.width=(100*G.xp/(G.lv*50))+'%';
+$('nav').innerHTML=NAV.map(([k,i,t])=>`<button class="nb${(scr||'home')==k?' on':''}" onclick="nav('${k}')">${ic(i)}<span>${t}</span></button>`).join('');
+$('start').hidden=started||!!scr;const e=$('scr');e.hidden=!scr;if(scr)e.innerHTML=SC[scr]()}
+function startGame(){started=true;say('กดค้างเพื่อชาร์จ แล้วปล่อยเพื่อเหวี่ยงเบ็ด',3);render()}
+function gainXp(x){G.xp+=x;while(G.xp>=G.lv*50){G.xp-=G.lv*50;G.lv++;G.gem+=10;say('เลเวลอัป! ได้เพชร 10 เม็ด',3)}}
+function claim(i){const q=QS[i];if(G.qc[i]||G.q[q[1]]<q[2])return;G.qc[i]=1;G.money+=q[3];G.gem+=q[4];save();render()}
+function tg(k){G.fx[k]=G.fx[k]?0:1;save();render()}
+function shopBuy(i){const s=SH[i],k=s[2]=='g'?'gem':'money';if(G[k]<s[3])return;G[k]-=s[3];s[4]();save();render()}
+function goMap(i){go(i);if(G.open[i]&&G.area==i){scr=null;render()}}
+function buy(k){const c=k=='rod'?rodCost():luckCost();if(G.money<c||G[k]>=8)return;G.money-=c;G[k]++;save();render();say(k=='rod'?'คันเบ็ดแข็งแรงขึ้น!':'เหยื่อพิเศษดึงดูดปลาหายากมากขึ้น')}
+function go(i){if(!G.open[i]){if(G.money<AR[i].cost)return;G.money-=AR[i].cost;G.open[i]=1}G.area=i;st='idle';save();render();say('ย้ายไป '+AR[i].n)}
+function sell(){const tot=G.bag.reduce((s,b)=>s+b.v,0);G.money+=tot;G.q.s+=tot;G.bag=[];save();render();say('ขายปลาได้ '+fmt(tot)+' บาท')}
+C.addEventListener('pointerdown',e=>{e.preventDefault();down()});addEventListener('pointerup',up);addEventListener('pointercancel',up);
+addEventListener('keydown',e=>{if(e.code=='Space'&&!e.repeat){e.preventDefault();down()}});addEventListener('keyup',e=>{if(e.code=='Space')up()});
+let last=performance.now();function loop(n){const dt=Math.min(.05,(n-last)/1000);last=n;if(!scr)update(dt);draw();requestAnimationFrame(loop)}
+render();requestAnimationFrame(loop);
+</script></body></html>

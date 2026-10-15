@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071a34">
+  <title>ตกปลาเจ้าสมุทร</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="loading-screen" class="loading-screen" role="status" aria-live="polite" aria-busy="true">
+  <svg class="loading-pattern" aria-hidden="true"><defs><pattern id="sea-pattern" width="180" height="112" patternUnits="userSpaceOnUse"><g fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 31c13-12 29-12 42 0-13 12-29 12-42 0zm42 0 9-8v16zM23 80q7-9 14 0t14 0t14 0"/><path d="M112 42q8-8 16 0t16 0M112 51q8-8 16 0t16 0"/></g><circle cx="147" cy="88" r="9" fill="white"/></pattern></defs><rect width="100%" height="100%" fill="url(#sea-pattern)"/></svg>
+  <div class="loading-bubbles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="loading-content">
+    <div class="loading-logo" aria-hidden="true">
+      <svg class="loading-rod" viewBox="0 0 176 190"><path d="M22 162 114 30"/><path d="M114 30c35-22 64 1 53 44"/><path d="M167 74q5 26-17 36"/><circle cx="42" cy="138" r="16"/><path d="M29 150h26M35 155v17h17v-17M42 172v9"/><path d="m116 30-8 11m17-17-8 12m18-16-9 12"/></svg>
+      <div class="loading-wordmark"><span class="loading-kicker">OCEAN ADVENTURE</span><strong>Fish<span>ing</span></strong><b>the Ocean</b><small>ตกปลาเจ้าสมุทร</small></div>
+      <svg class="loading-float" viewBox="0 0 52 90"><path d="M26 2v52"/><path d="M26 53 43 70a18 18 0 1 1-34 0z"/><path d="M26 53 43 70"/></svg>
+    </div>
+    <div id="loading-progress" class="loading-progress" role="progressbar" aria-label="กำลังโหลดเกม" aria-valuemin="0" aria-valuemax="100"><i id="loading-fill"></i></div>
+    <p id="loading-label">กำลังเตรียมโลกใต้ทะเล · 0%</p>
+    <button id="loading-start" class="loading-start" onclick="startGame()" hidden>เริ่มเกม</button>
+  </div>
+  <div class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+</div>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e8a317" stroke="#9a6200" stroke-width="2"/><circle cx="12" cy="12" r="6.5" fill="#ffd45a"/><path d="M12 8v8M9.5 10.5h4a1.5 1.5 0 010 3h-3.5" stroke="#9a6200" stroke-width="1.6" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-gem" viewBox="0 0 24 24"><polygon points="12,2 21,9 12,22 3,9" fill="#4fc3ff" stroke="#0b5aa8" stroke-width="1.5"/><path d="M3 9h18M8 9l4-7 4 7-4 13z" fill="none" stroke="#d6f3ff" stroke-width="1"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7z" fill="#ff6b6b" stroke="#7a1f1f" stroke-width="1.5"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></symbol>
+<symbol id="i-rod" viewBox="0 0 24 24"><path d="M3 21L19 4" stroke="#d8a66a" stroke-width="2.4" stroke-linecap="round"/><path d="M19 4c2 3 1 8-2 10" stroke="#e8f4f0" stroke-width="1.2" fill="none"/><circle cx="17" cy="15" r="2" fill="#ff4d4d"/></symbol>
+<symbol id="i-shop" viewBox="0 0 24 24"><path d="M4 9l2-5h12l2 5v2a3 3 0 01-6 0 3 3 0 01-6 0 3 3 0 01-6 0z" fill="#ff7a59" stroke="#fff" stroke-width="1.2"/><rect x="5" y="12" width="14" height="8" fill="#ffe3b0" stroke="#fff" stroke-width="1.2"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 8h12l2 12H4z" fill="#9fb8dd" stroke="#eaf4ff" stroke-width="1.5"/><path d="M9 8V6a3 3 0 016 0v2" fill="none" stroke="#eaf4ff" stroke-width="1.5"/><rect x="10" y="12" width="4" height="3" rx=".8" fill="#ffd45a"/></symbol>
+<symbol id="i-fish" viewBox="0 0 24 24"><ellipse cx="11" cy="12" rx="8" ry="5" fill="#cfe3ff"/><path d="M17 12l6-5v10z" fill="#cfe3ff"/><circle cx="7" cy="11" r="1.2" fill="#0b2a55"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 3l8 9h-5v9H9v-9H4z" fill="#eaf4ff"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2" fill="#eaf4ff"/><rect x="9" y="2" width="6" height="4" rx="1" fill="#9fb8dd"/><path d="M8 13l3 3 5-6" stroke="#1470e0" stroke-width="2" fill="none"/></symbol>
+<symbol id="i-cup" viewBox="0 0 24 24"><path d="M7 3h10v6a5 5 0 01-10 0z" fill="#ffd45a"/><path d="M7 5H3c0 4 2 5 4 5M17 5h4c0 4-2 5-4 5" stroke="#ffd45a" stroke-width="1.6" fill="none"/><rect x="10.5" y="14" width="3" height="4" fill="#e8a317"/><rect x="7" y="18" width="10" height="3" rx="1" fill="#ffd45a"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="#eaf4ff" stroke-width="4" stroke-dasharray="3.2 2.6"/><circle cx="12" cy="12" r="5" fill="#eaf4ff"/><circle cx="12" cy="12" r="2.2" fill="#0b2a55"/></symbol>
+<symbol id="i-bait" viewBox="0 0 24 24"><path d="M5 14c0-5 5-9 11-8 2 0 3 2 2 4-1 5-5 9-10 8-2 0-3-2-3-4z" fill="#ff9ec7" stroke="#8a2a55" stroke-width="1.5"/><circle cx="14" cy="9" r="1.4" fill="#8a2a55"/></symbol>
+<symbol id="i-sound" viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9z" fill="#eaf4ff"/><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" stroke="#eaf4ff" stroke-width="1.8" fill="none" stroke-linecap="round"/></symbol><symbol id="i-mute" viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9z" fill="#9fb8dd"/><path d="M16 9l5 6M21 9l-5 6" stroke="#ff8a8a" stroke-width="2" stroke-linecap="round"/></symbol></defs></svg><div class="w">
+  <div id="app">
+    <canvas id="c" width="640" height="400" aria-label="สนามตกปลา"></canvas>
+    <div id="hud">
+      <div class="prof glass" role="button" tabindex="0" onclick="nav('angler')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" aria-label="ดูประวัตินักตกปลา" title="ดูประวัตินักตกปลา">
+        <b id="anglerName">นักตกปลา</b><span id="pl"></span><span class="prof-hint" aria-hidden="true">ดูประวัติ ›</span>
+        <div class="xp"><i id="xb"></i></div>
+        <div id="gearHud" aria-live="polite"></div>
+      </div>
+      <div class="cur"><span class="pill" id="m"></span><span class="pill" id="g"></span></div>
+    </div>
+    <div id="envHud" class="env-hud" aria-label="เวลา สภาพอากาศ และโบนัสตกปลา"></div>
+    <div id="rail">
+      <button class="rb" onclick="nav('shop')"><svg class="ic"><use href="#i-shop"/></svg>ร้านค้า</button>
+      <button class="rb" onclick="nav('map')"><svg class="ic"><use href="#i-pin"/></svg>แผนที่</button>
+      <button class="rb" id="soundBtn" onclick="SFX.togglePanel()" aria-label="ตั้งค่าเสียง" aria-haspopup="dialog" aria-expanded="false" aria-pressed="true"><svg class="ic"><use href="#i-sound"/></svg><span>เสียง</span></button>
+    </div>
+    <section id="scr" hidden></section>
+  </div>
+  <nav id="nav" aria-label="เมนูเกม"></nav>
+  <div class="tip">กดค้างที่จอ (หรือ Space ค้าง) เพื่อชาร์จ แล้วปล่อยเพื่อเหวี่ยงเบ็ด · กลางคืนและอากาศต่างกันส่งผลต่อโชคกับความเร็วเก็บสาย ดูโบนัสปัจจุบันที่แถบเวลา</div>
+</div>
+<script src="audio.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
